@@ -10,11 +10,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "folder")
 public class Folder {
 
-    @Column(nullable = false)
-    String folder_owner;
+    @Id
+    private int id;
 
     @Column(nullable = false)
-    String folder_name;
+    private String folder_owner;
+
+    @Column(nullable = false)
+    private String folder_name;
 
     @Enumerated(EnumType.STRING)
     private Category category;

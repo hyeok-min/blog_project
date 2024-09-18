@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class Comment {
     @Id
     @Column(name="board_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
