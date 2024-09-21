@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "folder")
-public class Folder {
+public class Folder{
 
     @Id
+    @Column(name="folder_id")
     private int id;
 
     @Column(nullable = false)
