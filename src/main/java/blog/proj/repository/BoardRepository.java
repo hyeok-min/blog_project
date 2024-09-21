@@ -1,4 +1,7 @@
 package blog.proj.repository;
 
-public class BoardRepository {
+import blog.proj.entity.Board;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BoardRepository extends JpaRepository<Board,Long> {
 }
