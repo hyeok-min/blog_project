@@ -1,6 +1,7 @@
 package blog.proj.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,5 +32,12 @@ public class Board extends BaseTimeEntity{
     @Column(nullable = false)
     private Long board_update_count;
 
+    @Builder
+    public Board(String name,String title,String content,Category category){
+        this.name=name;
+        this.title=title;
+        this.content=content;
+        this.category=category;
+    }
 
 }
