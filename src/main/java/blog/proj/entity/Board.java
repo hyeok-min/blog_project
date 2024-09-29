@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -32,12 +35,23 @@ public class Board extends BaseTimeEntity{
     @Column(nullable = false)
     private Long board_update_count;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Comment> comment = new ArrayList<>();
+
+
     @Builder
-    public Board(String name,String title,String content,Category category){
+    public Board(String name,String title,String content,Category category,User user){
         this.name=name;
         this.title=title;
         this.content=content;
         this.category=category;
+        this.user = user;
     }
+
+
 
 }
