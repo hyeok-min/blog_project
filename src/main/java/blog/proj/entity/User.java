@@ -1,11 +1,13 @@
 package blog.proj.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,8 +34,25 @@ public class User extends BaseTimeEntity implements UserDetails {
     private String passWord;
 
 
-    //spring security (UserDetails을 사용하기 위한 필수 메서드들)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Board> board = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Folder> folder=new ArrayList<>();
+
+    @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> question=new ArrayList<>();
+
+    @Builder
+    public User(Long id, String email,String name,String nickName ,String passWord) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.nickName=nickName;
+        this.passWord = passWord;
+    }
+
+    //spring security (UserDetails을 사용하기 위한 필수 메서드들)=================================
     @Override //권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("user"));
