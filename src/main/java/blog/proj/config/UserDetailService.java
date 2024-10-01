@@ -1,5 +1,6 @@
 package blog.proj.config;
 
+import blog.proj.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,5 @@ public class UserDetailService implements UserDetailsService {//Spring Securityì
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
             return userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException((email)));
-
     }
 }
