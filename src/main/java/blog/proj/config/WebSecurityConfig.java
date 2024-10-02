@@ -41,7 +41,7 @@ public class WebSecurityConfig {
                 .formLogin(formLogin -> formLogin //폼 기반 로그인 설정
                         .usernameParameter("email") // id값 email 사용
                         .passwordParameter("pwd")   // pwd값 pwd 사용
-                        .loginPage("/api/login") //로그인 페이지 경로
+//                        .loginPage("/api/login") //로그인 페이지 경로
                         .successHandler(customLoginSuccessHandler) //로그인 완료 후 이동할 페이지
                 )
                 .logout(logout -> logout
