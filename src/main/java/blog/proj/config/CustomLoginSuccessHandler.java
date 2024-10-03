@@ -17,7 +17,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         String username = authentication.getName();
 
         // 로그인 성공 후 이동할 URL 설정
-        String redirectUrl = "/api/" + username + "/home";
+        String redirectUrl = "/api/home/"+username;
 
         // 해당 URL로 리다이렉트
         response.sendRedirect(redirectUrl);

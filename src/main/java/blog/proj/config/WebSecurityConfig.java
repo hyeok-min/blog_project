@@ -33,8 +33,8 @@ public class WebSecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth //인증, 인가 설정
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/login"),
-                                new AntPathRequestMatcher("/signup"),
+                                new AntPathRequestMatcher("/api/home"),
+                                new AntPathRequestMatcher("/api/board/**"),
                                 new AntPathRequestMatcher("/user")
                         ).permitAll() //누구나 접근 가능
                         .anyRequest().authenticated())
