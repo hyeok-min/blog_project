@@ -13,10 +13,10 @@ public class Folder{
 
     @Id
     @Column(name="folder_id")
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
-    private String folder_name;
+    private String folderName;
 
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -26,11 +26,9 @@ public class Folder{
     private User user;
 
     @Builder
-    public Folder(int id, String folder_name,Category category,User user) {
-        this.id = id;
-        this.folder_name = folder_name;
+    public Folder(String folderName,Category category) {
+        this.folderName = folderName;
         this.category = category;
-        this.user=user;
     }
 
 
