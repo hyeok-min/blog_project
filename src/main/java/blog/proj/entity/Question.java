@@ -19,8 +19,12 @@ public class Question extends BaseTimeEntity{
     private String writer;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String content;
 
+    //답변 받을 경우 채워짐
     @Column(nullable = false)
     private String answer;
 
@@ -32,8 +36,9 @@ public class Question extends BaseTimeEntity{
     private QuestionStatus questionStatus;
 
     @Builder
-    public Question(String writer,String content,String answer,QuestionStatus questionStatus,User user){
+    public Question(String writer,String title,String content,String answer,QuestionStatus questionStatus,User user){
         this.writer=writer;
+        this.title=title;
         this.content=content;
         this.answer=answer;
         this.questionStatus=questionStatus;

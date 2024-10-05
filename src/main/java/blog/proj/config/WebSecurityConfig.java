@@ -14,13 +14,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class WebSecurityConfig {
+public class WebSecurityConfig  implements WebMvcConfigurer {
     private final UserDetailService userService;
     private final CustomLoginSuccessHandler customLoginSuccessHandler;
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**") // 모든 API 경로에 대해
+                .allowedOrigins("http://localhost:8080") // Vue가 실행되는 도메인
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
     //Spring Security 기능 비활성화
     @Bean
     public WebSecurityCustomizer configure() {
@@ -33,19 +44,22 @@ public class WebSecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth //인증, 인가 설정
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/home"),
-                                new AntPathRequestMatcher("/api/board/**"),
-                                new AntPathRequestMatcher("/user")
-                        ).permitAll() //누구나 접근 가능
-                        .anyRequest().authenticated())
+                                "/api/home",
+                                "/api/board/**",
+                                "/user",
+                                 "/"
+                                ).permitAll() //누구나 접근 가능
+//                        .anyRequest().authenticated()
+                )
                 .formLogin(formLogin -> formLogin //폼 기반 로그인 설정
-                        .usernameParameter("email") // id값 email 사용
-                        .passwordParameter("pwd")   // pwd값 pwd 사용
-//                        .loginPage("/api/login") //로그인 페이지 경로
-                        .successHandler(customLoginSuccessHandler) //로그인 완료 후 이동할 페이지
+                                .usernameParameter("email") // id값 email 사용
+                                .passwordParameter("pwd")   // pwd값 pwd 사용
+//                                .loginPage("/api/login") //로그인 페이지 경로
+                                .successHandler(customLoginSuccessHandler) //로그인 완료 후 이동할 페이지
+                                .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login") //로그아웃이 완료되었을 때 이동할 경로
+                        .logoutSuccessUrl("/logintetst") //로그아웃이 완료되었을 때 이동할 경로
                         .invalidateHttpSession(true)
                 )
                 .csrf(AbstractHttpConfigurer::disable)

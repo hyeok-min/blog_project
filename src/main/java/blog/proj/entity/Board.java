@@ -33,7 +33,7 @@ public class Board extends BaseTimeEntity{
 
     //업데이트 횟수(1이상이면 업데이트 되었다는 것)
     @Column(nullable = false)
-    private Long board_update_count;
+    private Long boardUpdateCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -49,8 +49,17 @@ public class Board extends BaseTimeEntity{
         this.title=title;
         this.content=content;
         this.category=category;
+        this.boardUpdateCount=0L;
         this.user = user;
     }
+
+    public void updateCount(){
+        this.boardUpdateCount++;
+    }
+
+    //수정 메서드
+    public void updateTitle(String title){this.title=title;}
+    public void updateContent(String content){this.content=content;}
 
 
 

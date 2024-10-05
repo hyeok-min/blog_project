@@ -21,13 +21,13 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name="user_id")
     Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true,nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(unique = true,nullable = false)
     private String nickName;
 
     @Column(nullable = false)
@@ -44,12 +44,16 @@ public class User extends BaseTimeEntity implements UserDetails {
     private List<Question> question=new ArrayList<>();
 
     @Builder
-    public User(Long id, String email,String name,String nickName ,String passWord) {
-        this.id = id;
+    public User( String email,String name,String nickName ,String passWord) {
         this.email = email;
         this.name = name;
         this.nickName=nickName;
         this.passWord = passWord;
+    }
+    public void update(String passWord, String email ,String nickName) {
+        this.passWord = passWord;
+        this.email=email;
+        this.nickName=nickName;
     }
 
     //spring security (UserDetails을 사용하기 위한 필수 메서드들)=================================
