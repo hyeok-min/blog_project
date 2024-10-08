@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -25,8 +28,12 @@ public class Folder{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "folder",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Board> board = new ArrayList<>();
+
     @Builder
-    public Folder(String folderName,Category category) {
+    public Folder(User user,String folderName,Category category) {
+        this.user=user;
         this.folderName = folderName;
         this.category = category;
     }

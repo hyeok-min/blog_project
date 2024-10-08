@@ -39,18 +39,23 @@ public class Board extends BaseTimeEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folder_id")
+    private Folder folder;
+
     @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Comment> comment = new ArrayList<>();
 
 
     @Builder
-    public Board(String name,String title,String content,Category category,User user){
+    public Board(String name,String title,String content,Category category,User user,Folder folder){
         this.name=name;
         this.title=title;
         this.content=content;
         this.category=category;
         this.boardUpdateCount=0L;
         this.user = user;
+        this.folder = folder;
     }
 
     public void updateCount(){
