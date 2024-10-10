@@ -27,10 +27,8 @@ public class HomeService {
     private final UserDetailService userDetailService;
     private final AuthenticationManager authenticationManager;
     //홈
-    @Transactional
-    public void xx(){
 
-    }
+
     //로그인
     public UserDetails loginUser(String email,String password){
         UserDetails userDetails = userDetailService.loadUserByUsername(email);

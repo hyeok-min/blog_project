@@ -33,12 +33,13 @@ public class BoardService {
 
     //게시글 작성
     @Transactional
-    public Board createBoard(BoardDto boardDto, User userId){
+    public Board createBoard(BoardDto boardDto,@AuthenticationPrincipal Authentication authentication){
+        User user = (User) authentication.getPrincipal();
         Board board= Board.builder()
                 .title(boardDto.getTitle())
-                .name(userId.getName())
+                .name(user.getName())
                 .content(boardDto.getContent())
-                .user(userId)
+                .user(user)
                 .build();
         return boardRepository.save(board); }
 
@@ -58,10 +59,10 @@ public class BoardService {
 
     //폴더 생성
     @Transactional
-    public void addFolder(String folderName){
-//    public void addFolder(String folderName,@AuthenticationPrincipal Authentication authentication){
-//        User user = (User) authentication.getPrincipal();
+    public void addFolder(String folderName,@AuthenticationPrincipal Authentication authentication){
+        User user = (User) authentication.getPrincipal();
         Folder folder = Folder.builder()
+                .user(user)
                 .folderName(folderName)
                 .category(Category.FOLDER)
                 .build();
