@@ -18,4 +18,6 @@ public class BoardDto {
     private String content;
 
     private Category category;
+
+    private String folderName;
 }

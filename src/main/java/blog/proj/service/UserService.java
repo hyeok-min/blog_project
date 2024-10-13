@@ -26,7 +26,6 @@ public class UserService {
     public User createUser(UserDto userDto) {
         User user = User.builder()
                 .email(userDto.getEmail())
-                .name(userDto.getName())
                 .nickName(userDto.getNickName())
                 .passWord(bCryptPasswordEncoder.encode(userDto.getPassWord()))
                 .build();
