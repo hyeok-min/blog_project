@@ -24,7 +24,7 @@ public class BoardService {
         //리스트 조회
     public List<Board> getBoardList(@AuthenticationPrincipal Authentication authentication){
         User user = (User) authentication.getPrincipal();
-        return boardRepository.findByBoardList(user.getName());
+        return boardRepository.findByBoardList(user.getNickName());
     }
         //단 건 조회
     public Board getBoard(Long id){
@@ -37,7 +37,7 @@ public class BoardService {
         User user = (User) authentication.getPrincipal();
         Board board= Board.builder()
                 .title(boardDto.getTitle())
-                .name(user.getName())
+                .name(user.getNickName())
                 .content(boardDto.getContent())
                 .user(user)
                 .build();
