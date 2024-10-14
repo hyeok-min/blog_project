@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -21,64 +21,41 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig  implements WebMvcConfigurer {
-    private final UserDetailService userService;
     private final CustomLoginSuccessHandler customLoginSuccessHandler;
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**") // 모든 API 경로에 대해
-                .allowedOrigins("http://localhost:8080") // Vue가 실행되는 도메인
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
-    //Spring Security 기능 비활성화
-    @Bean
-    public WebSecurityCustomizer configure() {
-        return (web) -> web.ignoring()
-                .requestMatchers(new AntPathRequestMatcher("/static/**"));
-    }
+    private final CustomLoginFailureHandler customLoginFailureHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return http
-                .authorizeHttpRequests(auth -> auth //인증, 인가 설정
-                        .requestMatchers(
-                                "/api/home",
-                                "/api/board/**",
-                                "/user",
-                                 "/"
-                                ).permitAll() //누구나 접근 가능
-//                        .anyRequest().authenticated()
+                .authorizeHttpRequests( auth -> auth
+                                .anyRequest().permitAll() // 모든 요청에 대해 접근 허용
                 )
                 .formLogin(formLogin -> formLogin //폼 기반 로그인 설정
                                 .usernameParameter("email") // id값 email 사용
-                                .passwordParameter("pwd")   // pwd값 pwd 사용
-//                                .loginPage("/api/login") //로그인 페이지 경로
+                                .passwordParameter("passWord")   // pwd값 pwd 사용
+                                .loginProcessingUrl("/api/login")
                                 .successHandler(customLoginSuccessHandler) //로그인 완료 후 이동할 페이지
+//                        .failureHandler(customLoginFailureHandler) // 로그인 실패 핸들러
                                 .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/logintetst") //로그아웃이 완료되었을 때 이동할 경로
+                        .logoutSuccessUrl("/logout") //로그아웃이 완료되었을 때 이동할 경로
                         .invalidateHttpSession(true)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
-
-
-
     //인증 관리자 관련 설정
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception{
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService); //사용자 정보 서비스 저장
-        authProvider.setPasswordEncoder(bCryptPasswordEncoder);
-        return new ProviderManager(authProvider);
+    public AuthenticationManager authManager(HttpSecurity http, UserDetailService userService) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
+        return authenticationManagerBuilder.build();
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

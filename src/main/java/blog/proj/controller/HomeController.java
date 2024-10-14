@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class HomeController {
     private final HomeService homeService;
     //홈
@@ -24,24 +24,6 @@ public class HomeController {
     public ResponseEntity<String> home() {
         return ResponseEntity.ok("home");
     }
-//    //로그인사용자 홈
-//    @GetMapping("/home/{user}")
-//    public ResponseEntity<> home() {
-//        return ResponseEntity.ok("home");
-//    }
 
-    //로그인
-    @PostMapping("/login")
-    public  ResponseEntity<?> loginUser(@RequestBody UserDto userDto){
-        try {
-            // 로그인 처리
-            UserDetails userDetails = homeService.loginUser(userDto.getEmail(), userDto.getPassWord());
 
-            // 로그인 성공 시 사용자 정보 반환
-            return new ResponseEntity<>(userDetails, HttpStatus.OK);
-        } catch (Exception e) {
-            // 로그인 실패 시 에러 메시지 반환
-            return new ResponseEntity<>("Login failed: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
-        }
-    }
 }
