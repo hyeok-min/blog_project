@@ -30,16 +30,16 @@ public class WebSecurityConfig  implements WebMvcConfigurer {
                 .authorizeHttpRequests( auth -> auth
                                 .anyRequest().permitAll() // 모든 요청에 대해 접근 허용
                 )
-                .formLogin(formLogin -> formLogin //폼 기반 로그인 설정
-                                .usernameParameter("email") // id값 email 사용
-                                .passwordParameter("passWord")   // pwd값 pwd 사용
-                                .loginProcessingUrl("/api/login")
-                                .successHandler(customLoginSuccessHandler) //로그인 완료 후 이동할 페이지
-//                        .failureHandler(customLoginFailureHandler) // 로그인 실패 핸들러
-                                .permitAll()
-                )
+//                .formLogin(formLogin -> formLogin //폼 기반 로그인 설정
+//                                .usernameParameter("email") // id값 email 사용
+//                                .passwordParameter("passWord")   // pwd값 pwd 사용
+//                                .loginProcessingUrl("/api/login")
+//                                .defaultSuccessUrl("http://localhost:3000/", true)
+//                                .permitAll()
+//                )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/logout") //로그아웃이 완료되었을 때 이동할 경로
+                        .logoutUrl("/api/logout") // 로그아웃 요청 URL
+                        .logoutSuccessUrl("http://localhost:3000/") // 로그아웃 성공 후 리디렉션할 URL
                         .invalidateHttpSession(true)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
