@@ -1,6 +1,7 @@
 package blog.proj.dto;
 
 import blog.proj.entity.Category;
+import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
