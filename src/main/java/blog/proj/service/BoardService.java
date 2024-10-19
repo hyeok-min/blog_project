@@ -1,8 +1,10 @@
 package blog.proj.service;
 
 import blog.proj.dto.BoardDto;
+import blog.proj.dto.UserDto;
 import blog.proj.entity.*;
 import blog.proj.repository.BoardRepository;
+import blog.proj.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     //게시글 조회
         //리스트 조회
@@ -59,13 +63,17 @@ public class BoardService {
 
     //폴더 생성
     @Transactional
-    public void addFolder(String folderName,@AuthenticationPrincipal Authentication authentication){
-        User user = (User) authentication.getPrincipal();
+    public void addFolder(String folderName){
+
         Folder folder = Folder.builder()
-                .user(user)
                 .folderName(folderName)
                 .category(Category.FOLDER)
                 .build();
+    }
+
+    public List<BoardDto> folderList(String name){
+        List<BoardDto> folders = boardRepository.findByFolderList(name);
+       return folders;
     }
 
 }
