@@ -1,14 +1,14 @@
 package blog.proj.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 @Getter
+@NoArgsConstructor
 public class UserDto {
-
-    private long id;
-
     @NotEmpty(message = "이메일은 필수 입력 값입니다.")
     private String email;
 
@@ -19,4 +19,10 @@ public class UserDto {
     @NotEmpty(message = "비밀번호는 필수 입력 값입니다.")
     private String passWord;
 
+    @QueryProjection
+    public UserDto(Long id, String email, String nickName, String passWord) {
+        this.email = email;
+        this.nickName = nickName;
+        this.passWord = passWord;
+    }
 }

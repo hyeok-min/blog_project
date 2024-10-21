@@ -3,6 +3,7 @@ package blog.proj.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "User")
+@NoArgsConstructor
 public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
@@ -23,9 +25,6 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Column(unique = true,nullable = false)
     private String email;
-
-    @Column(nullable = false)
-    private String name;
 
     @Column(unique = true,nullable = false)
     private String nickName;
@@ -44,9 +43,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     private List<Question> question=new ArrayList<>();
 
     @Builder
-    public User( String email,String name,String nickName ,String passWord) {
+    public User( String email,String nickName ,String passWord) {
         this.email = email;
-        this.name = name;
         this.nickName=nickName;
         this.passWord = passWord;
     }

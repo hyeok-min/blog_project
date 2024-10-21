@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.nio.file.AccessDeniedException;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +23,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    //회원정보를 가져오는 로직
+    public UserDto userinfo(String email) {
+        UserDto user = userRepository.findByLoginUserEmail(email);
+        return user;
+    }
 
     //회원가입
     @Transactional
@@ -32,30 +41,39 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    //로그인시 계정확인 로직
-    public void findUserEmail(UserDto userDto){
-        User user = userRepository.findByEmail(userDto.getEmail())
-                .orElseThrow(()-> new IllegalArgumentException("해당 이메일로 가입한 사용자가 없습니다"));
+    //로그인한 사용자와 블로거 주인 비교(글작성, 글 삭제 등에 이용됨)
+    public void authTransaction(String name) throws AccessDeniedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccessDeniedException("User is not authenticated");
+        }
 
-        if(!bCryptPasswordEncoder.matches(userDto.getPassWord(), user.getPassword())){
-            throw new BadCredentialsException("비밀번호가 틀립니다.");
+        String currentUserName = authentication.getName();
+        log.info("authTransaction = "+currentUserName);
+        UserDto currentUser = userinfo(currentUserName);
+        log.info("authTransaction2 = "+currentUser);
+        if (!name.equals(currentUser.getNickName())) {
+            throw new AccessDeniedException("You do not have permission to perform this action");
         }
     }
 
     //계정 삭제
     @Transactional
     public void deleteUser(String email){
+        log.info(("delete service come"));
         userRepository.deleteByEmail(email);
     }
 
     //계정 업데이트
     @Transactional
-    public void updateUser(UserDto userDto, Authentication authentication){
+    public void updateUser(UserDto userDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
-        User userUpdate = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(()->new UsernameNotFoundException("해당 유저가 없습니다."));
-
+        User userUpdate = userRepository.findByEmail(user.getEmail());
+        log.info(userDto.getNickName());
+        log.info(userDto.getEmail());
+        log.info(userDto.getPassWord());
         userUpdate.update(bCryptPasswordEncoder.encode(userDto.getPassWord()),userDto.getEmail(),userDto.getNickName());
 
         userRepository.save(userUpdate);
