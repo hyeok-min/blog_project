@@ -50,12 +50,19 @@ public class BoardController {
         return ResponseEntity.ok(boardlist); // 200 OK와 함께 리스트 반환
     }
 
-//    //게시글
-//    @GetMapping("/{user}/{folder}/{id}")
-//    public  ResponseEntity<BoardDto> getBoard( @PathVariable String user, @PathVariable String folder, @PathVariable Long id) {
-////        return new ResponseEntity<>(board, HttpStatus.OK);
-//    }
-//
+    //게시글
+    @GetMapping("/{user}/{folder}/{id}")
+    public  ResponseEntity<BoardDto> getBoard( @PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("id") Long id) {
+        BoardDto board = boardService.getBoard(id);
+        log.info("board : "+board.getContent(),board.getTitle(),board.getName(),board.getId());
+        if (board==null) {
+            log.info("board empty");
+            return ResponseEntity.notFound().build(); //404 코드 반환
+        }
+        log.info("board out");
+        return ResponseEntity.ok(board); // 200 OK와 함께 리스트 반환
+    }
+
 //게시글 작성
 @PostMapping("/{users}/{folder}")
     public  ResponseEntity<BoardDto> getBoard( @PathVariable("users") String users, @PathVariable("folder") String folder, @RequestBody BoardDto boardDto) {
@@ -73,17 +80,19 @@ public class BoardController {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     }
-//    //게시글 수정
-//    @PutMapping("/{user}/{folder}/{id}/update")
-//    public ResponseEntity<BoardDto> updateBoard( @PathVariable String user, @PathVariable String folder, @PathVariable Long id) {
-////        return new ResponseEntity<>(board, HttpStatus.OK);
-//    }
-//
-//    //게시글 삭제
-//    @DeleteMapping("/{user}/{folder}/{id}/delete")
-//    public ResponseEntity<Void> deleteBoard( @PathVariable String user, @PathVariable String folder, @PathVariable Long id) {
-////        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 삭제 성공 시 204 상태 코드 반환
-//    }
+    //게시글 수정
+    @PutMapping("/{user}/{folder}/{id}/update")
+    public ResponseEntity<BoardDto> updateBoard(@RequestBody BoardDto boardDto,@PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("id") Long id) {
+        boardService.modifyBoard(id,boardDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //게시글 삭제
+    @DeleteMapping("/{user}/{folder}/{id}/delete")
+    public ResponseEntity<Void> deleteBoard( @PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("id") Long id) {
+       boardService.deleteBoard(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 삭제 성공 시 204 상태 코드 반환
+    }
 
 
 

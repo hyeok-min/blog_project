@@ -21,9 +21,11 @@ import java.util.List;
 public class BoardCustomRepositoryImpl implements BoardCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Board findByBoard(Long id){
+    public BoardDto findByBoard(Long id){
         return jpaQueryFactory
-                .selectFrom(board)
+                .select(Projections.fields(BoardDto.class,board.id,board.name,board.title,board.content,folder.folderName,board.boardUpdateCount))
+                .from(board)
+                .join(board.folder,folder)
                 .where(board.id.eq(id))
                 .fetchOne();
     }
