@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface BoardCustomRepository {
     List<BoardDto> findByBoardList(String name,Long id);
-    Board findByBoard(Long id);
+    BoardDto findByBoard(Long id);
     List<FolderDto> findByFolderList(String name, Long id);
+
 }

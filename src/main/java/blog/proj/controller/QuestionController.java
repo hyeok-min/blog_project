@@ -4,6 +4,7 @@ import blog.proj.dto.QuestionDto;
 import blog.proj.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,19 +21,20 @@ public class QuestionController {
     //문의사항 리스트
     @GetMapping("/{user}")
     public ResponseEntity<List<QuestionDto>> getQuestionList(@PathVariable String user) {
-        return new ResponseEntity<>(questions, HttpStatus.OK);
+
+        return ResponseEntity.ok();
     }
 
     //문의사항 리스트(관리자용)
     @GetMapping("/{user}/admin")
     public ResponseEntity<List<QuestionDto>> getQuestionListofAdmin(@PathVariable String user) {
-        return new ResponseEntity<>(questions, HttpStatus.OK);
+        return ResponseEntity.ok();
     }
 
     //문의사항 단건조회
     @GetMapping("/{user}/{id}")
     public ResponseEntity<QuestionDto> getQuestion(@PathVariable String user,@PathVariable Long id) {
-        return new ResponseEntity<>(question, HttpStatus.OK);
+        return ResponseEntity.ok();
     }
 
     //문의사항 작성
@@ -58,7 +60,7 @@ public class QuestionController {
     public ResponseEntity<QuestionDto> answerQuestion(@PathVariable String user,@PathVariable Long id) {
         return "index.html";
     }
+*/
 
- */
 
 }

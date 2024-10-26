@@ -21,6 +21,8 @@ public class Board extends BaseTimeEntity{
     @Column(nullable = false)
     private String name;
 
+    private Long view;
+
     @Column(nullable = false)
     private String title;
 
@@ -32,7 +34,6 @@ public class Board extends BaseTimeEntity{
     private Category category;
 
     //업데이트 횟수(1이상이면 업데이트 되었다는 것)
-    @Column(nullable = false)
     private Long boardUpdateCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,15 +58,10 @@ public class Board extends BaseTimeEntity{
         this.user = user;
         this.folder = folder;
     }
-
-    public void updateCount(){
-        this.boardUpdateCount++;
+    public void update(String title, String content ,Long updateCount,Folder folder) {
+        this.title = title;
+        this.content=content;
+        this.boardUpdateCount = updateCount+1;
+        this.folder=folder;
     }
-
-    //수정 메서드
-    public void updateTitle(String title){this.title=title;}
-    public void updateContent(String content){this.content=content;}
-
-
-
 }

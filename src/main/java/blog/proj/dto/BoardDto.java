@@ -18,7 +18,11 @@ public class BoardDto {
     @NotEmpty(message = "내용은 필수 입력 값입니다.")
     private String content;
 
+    private Long view;
+
     private Category category;
 
     private String folderName;
+
+    private Long boardUpdateCount;
 }

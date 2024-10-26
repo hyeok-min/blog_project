@@ -37,7 +37,7 @@ public class BoardService {
         return boardRepository.findByBoardList(user.getNickName(),folder1.getId());
     }
         //단 건 조회
-    public Board getBoard(Long id){
+    public BoardDto getBoard(Long id){
         return boardRepository.findByBoard(id);
     }
 
@@ -65,9 +65,8 @@ public class BoardService {
     @Transactional
     public void modifyBoard(Long id,BoardDto boardDto){
         Board board = boardRepository.findById(id).orElseThrow();
-        board.updateTitle(boardDto.getTitle());
-        board.updateContent(boardDto.getContent());
-        board.updateCount();
+        Folder folder = folderRepository.findByFolderName(boardDto.getFolderName());
+        board.update(boardDto.getTitle(),boardDto.getContent(),boardDto.getBoardUpdateCount(),folder);
     }
 
     //폴더 생성
