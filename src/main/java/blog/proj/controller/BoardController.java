@@ -28,6 +28,13 @@ public class BoardController {
     private final BoardService boardService;
     private final UserService userService;
 
+    //검색
+    @GetMapping("/search")
+    public List<BoardDto> search(@RequestParam("query") String query){
+        log.info("===search in =={}",query);
+        return boardService.search(query);
+    }
+
     //특정폴더의 게시글 리스트
     @GetMapping("/{user}/{folder}")
     public  ResponseEntity<List<BoardDto>> getBardList(@PathVariable("user") String user, @PathVariable("folder") String folder) {
@@ -65,7 +72,7 @@ public class BoardController {
 
 //게시글 작성
 @PostMapping("/{users}/{folder}")
-    public  ResponseEntity<BoardDto> getBoard( @PathVariable("users") String users, @PathVariable("folder") String folder, @RequestBody BoardDto boardDto) {
+    public  ResponseEntity<BoardDto> createBoard( @PathVariable("users") String users, @PathVariable("folder") String folder, @RequestBody BoardDto boardDto) {
     try {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User user = (User) authentication.getPrincipal();

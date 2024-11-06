@@ -27,7 +27,13 @@ public class BoardService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final FolderRepository folderRepository;
-    //게시글 조회
+
+    //검색
+    public List<BoardDto> search(String query) {
+        // 제목 또는 내용에서 검색어가 포함된 게시글을 찾기
+        return boardRepository.findBySearch(query);
+    }
+
         //리스트 조회
     public List<BoardDto> getBoardList(@AuthenticationPrincipal Authentication authentication,String folder){
         User user = (User) authentication.getPrincipal();
