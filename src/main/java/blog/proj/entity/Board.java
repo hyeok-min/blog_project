@@ -26,7 +26,7 @@ public class Board extends BaseTimeEntity{
     @Column(nullable = false)
     private String title;
 
-    @Lob
+
     @Column(nullable = false)
     private String content;
 
