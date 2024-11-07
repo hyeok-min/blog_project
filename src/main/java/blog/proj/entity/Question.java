@@ -4,9 +4,11 @@ package blog.proj.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "Question")
 public class Question extends BaseTimeEntity{
 
@@ -33,6 +35,7 @@ public class Question extends BaseTimeEntity{
     private User user;
 
     //문의 상태 WAIT, ANSWER
+    @Enumerated(EnumType.STRING) // 문자열로 저장
     private QuestionStatus questionStatus;
 
     @Builder
