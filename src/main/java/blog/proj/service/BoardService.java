@@ -29,20 +29,21 @@ public class BoardService {
     private final FolderRepository folderRepository;
 
     //검색
+
     public List<BoardDto> search(String query) {
         // 제목 또는 내용에서 검색어가 포함된 게시글을 찾기
         return boardRepository.findBySearch(query);
     }
 
         //리스트 조회
-    public List<BoardDto> getBoardList(@AuthenticationPrincipal Authentication authentication,String folder){
-        User user = (User) authentication.getPrincipal();
+    public List<BoardDto> getBoardList(UserDto userDto,String folder){
         Folder folder1 = folderRepository.findByFolderName(folder);
-        log.info("user nickname =={}",user.getNickName());
+        log.info("user nickname =={}",userDto.getNickName());
         log.info("user folder =={}",folder1);
-        return boardRepository.findByBoardList(user.getNickName(),folder1.getId());
+        return boardRepository.findByBoardList(userDto.getNickName(),folder1.getId());
     }
         //단 건 조회
+    @Transactional
     public BoardDto getBoard(Long id){
         return boardRepository.findByBoard(id);
     }
@@ -102,5 +103,9 @@ public class BoardService {
         log.info("Folders: {}", folders);
        return folders;
     }
-
+    //폴더 삭제
+    @Transactional
+    public void deleteFolder(String folder){
+        folderRepository.deleteByFolderName(folder);
+    }
 }

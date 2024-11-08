@@ -21,6 +21,7 @@ public class Board extends BaseTimeEntity{
     @Column(nullable = false)
     private String name;
 
+    @Column
     private Long view;
 
     @Column(nullable = false)
@@ -49,7 +50,7 @@ public class Board extends BaseTimeEntity{
 
 
     @Builder
-    public Board(String name,String title,String content,Category category,User user,Folder folder){
+    public Board(String name,String title,String content,Category category,User user,Folder folder,Long view){
         this.name=name;
         this.title=title;
         this.content=content;
@@ -57,6 +58,7 @@ public class Board extends BaseTimeEntity{
         this.boardUpdateCount=0L;
         this.user = user;
         this.folder = folder;
+        this.view = 0L;
     }
     public void update(String title, String content ,Long updateCount,Folder folder) {
         this.title = title;
