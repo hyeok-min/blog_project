@@ -19,6 +19,9 @@ public class UserDto {
     @NotEmpty(message = "비밀번호는 필수 입력 값입니다.")
     private String passWord;
 
+    private Long id;
+
+    private String role;
     @QueryProjection
     public UserDto(Long id, String email, String nickName, String passWord) {
         this.email = email;

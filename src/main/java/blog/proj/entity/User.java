@@ -32,6 +32,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false)
     private String passWord;
 
+    @Column
+    private String role;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Board> board = new ArrayList<>();
@@ -42,11 +44,16 @@ public class User extends BaseTimeEntity implements UserDetails {
     @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> question=new ArrayList<>();
 
+    @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comment=new ArrayList<>();
+
+
     @Builder
-    public User( String email,String nickName ,String passWord) {
+    public User( String email,String nickName ,String passWord,String role) {
         this.email = email;
         this.nickName=nickName;
         this.passWord = passWord;
+        this.role = role;
     }
     public void update(String passWord, String email ,String nickName) {
         this.passWord = passWord;
