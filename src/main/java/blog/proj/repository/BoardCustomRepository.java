@@ -11,5 +11,5 @@ public interface BoardCustomRepository {
     List<BoardDto> findByBoardList(String name,Long id);
     BoardDto findByBoard(Long id);
     List<FolderDto> findByFolderList(String name, Long id);
-
+    List<BoardDto> findBySearch(String query);
 }

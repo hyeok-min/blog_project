@@ -29,7 +29,11 @@ public class UserService {
         UserDto user = userRepository.findByLoginUserEmail(email);
         return user;
     }
-
+    //닉네임으로 정보 가져오는 로직
+    public UserDto userinfoNickName(String nick) {
+        UserDto user = userRepository.findByLoginUserNickName(nick);
+        return user;
+    }
     //회원가입
     @Transactional
     public User createUser(UserDto userDto) {
@@ -37,6 +41,7 @@ public class UserService {
                 .email(userDto.getEmail())
                 .nickName(userDto.getNickName())
                 .passWord(bCryptPasswordEncoder.encode(userDto.getPassWord()))
+                .role("user")
                 .build();
         return userRepository.save(user);
     }

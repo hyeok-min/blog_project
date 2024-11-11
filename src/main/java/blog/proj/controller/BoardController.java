@@ -38,13 +38,16 @@ public class BoardController {
     //특정폴더의 게시글 리스트
     @GetMapping("/{user}/{folder}")
     public  ResponseEntity<List<BoardDto>> getBardList(@PathVariable("user") String user, @PathVariable("folder") String folder) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("===boardlist in =={}",authentication.getName());
+        UserDto userDto = userService.userinfoNickName(user);
+        log.info("===boardlist in =={}",userDto.getNickName());
         log.info("===boardlist user in =={}",user);
         log.info("===boardlist folder in =={}",folder);
 
-//        User loggedInUser = (User) authentication.getPrincipal();
-       List<BoardDto> boardlist =  boardService.getBoardList(authentication,folder);
+//
+//        List<FolderDto> folderList = boardService.folderList(user,userDto.getId());
+
+
+       List<BoardDto> boardlist =  boardService.getBoardList(userDto,folder);
         log.info("boardlist tostring"+boardlist.size());
         for (BoardDto board : boardlist) {
             log.info("Board ID: {}, Title: {}", board.getId(), board.getTitle());
@@ -124,11 +127,10 @@ public class BoardController {
     //폴더 리스트
     @GetMapping("/{user}/folderList")
     public ResponseEntity<List<FolderDto>> getFolderList(@PathVariable("user") String user) {
-        log.info("folderlist in");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User loggedInUser = (User) authentication.getPrincipal();
 
-        List<FolderDto> folderList = boardService.folderList(user,loggedInUser.getId());
+        log.info("folderlist in");
+        UserDto userDto = userService.userinfoNickName(user);
+        List<FolderDto> folderList = boardService.folderList(user,userDto.getId());
 
         if (folderList.isEmpty()) {
             log.info("folderlist empty");
@@ -138,5 +140,11 @@ public class BoardController {
         return ResponseEntity.ok(folderList); // 200 OK와 함께 리스트 반환
     }
 
+    //폴더 삭제
+    @DeleteMapping("/{user}/{folder}/delete")
+    public ResponseEntity<Void> deleteFolder( @PathVariable("user") String user, @PathVariable("folder") String folder) {
+        boardService.deleteFolder(folder);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 삭제 성공 시 204 상태 코드 반환
+    }
 
 }

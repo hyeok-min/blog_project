@@ -5,4 +5,5 @@ import blog.proj.entity.User;
 
 public interface UserCustomRepository {
     UserDto findByLoginUserEmail(String email);
+    UserDto findByLoginUserNickName(String nick);
 }

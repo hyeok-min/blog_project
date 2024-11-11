@@ -22,8 +22,16 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     public BoardDto findByBoard(Long id){
+
+        long updateView = jpaQueryFactory
+                .update(board)
+                .set(board.view, board.view.add(1))  // 조회수 증가
+                .where(board.id.eq(id))
+                .execute();
+
+
         return jpaQueryFactory
-                .select(Projections.fields(BoardDto.class,board.id,board.name,board.title,board.content,folder.folderName,board.boardUpdateCount))
+                .select(Projections.fields(BoardDto.class,board.id,board.name,board.title,board.content,folder.folderName,board.boardUpdateCount,board.view))
                 .from(board)
                 .join(board.folder,folder)
                 .where(board.id.eq(id))
@@ -32,7 +40,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
 
     public List<BoardDto> findByBoardList(String name,Long id){
         return jpaQueryFactory
-                .select(Projections.fields(BoardDto.class,board.id,board.name,board.title,board.content,folder.folderName))
+                .select(Projections.fields(BoardDto.class,board.id,board.name,board.title,board.content,folder.folderName,board.view))
                 .from(board)
                 .join(board.folder,folder)
                 .where(board.name.eq(name).and(board.folder.id.eq(id)))
@@ -46,6 +54,15 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                 .where(folder.category.eq(Category.valueOf("FOLDER")).and(user.id.eq(id)))
                 .fetch();
     }
-
+    //검색
+    public List<BoardDto> findBySearch(String query){
+        return jpaQueryFactory
+                .select(Projections.fields(BoardDto.class,board.id,board.name,board.title,board.content,folder.folderName))
+                .from(board)
+                .join(board.folder,folder)
+                .where(board.title.containsIgnoreCase(query) // 대소문자 구분 없이 제목 검색
+                        .or(board.content.containsIgnoreCase(query)))
+                .fetch();
+    }
 
 }
