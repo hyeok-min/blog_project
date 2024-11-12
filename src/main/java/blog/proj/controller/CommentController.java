@@ -51,6 +51,18 @@ public class CommentController {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     }
+    //대댓글 작성
+    @PostMapping("/{user}/{folderName}/{id}/reply")
+    public ResponseEntity<CommentDto> insertReplyComment(@PathVariable("user") String user,@PathVariable("folderName") String folderName,@PathVariable("id") Long id, @RequestBody CommentDto commentDto){
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            commentService.createReplyComment(id,commentDto,authentication);
+            return new ResponseEntity<>(HttpStatus.CREATED); // 201 Created
+        } catch (Exception e) {
+            // 게시물 생성 실패시 메시지
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     //댓글 삭제
     @GetMapping("/{boardId}/delete/{commentId}")
