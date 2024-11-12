@@ -26,17 +26,25 @@ public class Comment extends BaseTimeEntity {
     //부모댓글인지, 대댓글인지 확인하는 변수 0은 부모, 1은 자식
     private int comment_order;
 
+    private Long commentParentId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Comment(Long id,String name,String comment,int comment_order,Board board) {
+    public Comment(Long id,String name,String comment,int comment_order,Board board,User user,Long commentParentId) {
         this.id = id;
         this.name = name;
         this.comment =comment;
         this.comment_order=comment_order;
+        this.commentParentId=commentParentId;
         this.board=board;
+        this.user=user;
     }
 
 }

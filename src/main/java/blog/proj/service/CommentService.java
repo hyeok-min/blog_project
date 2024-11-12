@@ -34,7 +34,20 @@ public class CommentService {
                 .board(board)
                 .build();
         return commentRepository.save(comment); }
-
+    //자식 댓글달기
+    @Transactional
+    public Comment createReplyComment(Long id,CommentDto commentDto, @AuthenticationPrincipal Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        Board board = boardRepository.findById(id).orElseThrow();
+        Comment comment= Comment.builder()
+                .comment_order(1)
+                .name(user.getNickName())
+                .comment(commentDto.getComment())
+                .commentParentId(commentDto.getCommentParentId())
+                .user(user)
+                .board(board)
+                .build();
+        return commentRepository.save(comment); }
     //해당 게시물 댓글 리스트
     public List<CommentDto> getCommentList(Long id){
         List<CommentDto> getComment = commentRepository.findByCommentList(id);
