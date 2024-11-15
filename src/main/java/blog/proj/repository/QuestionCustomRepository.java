@@ -5,7 +5,9 @@ import blog.proj.dto.QuestionDto;
 import java.util.List;
 
 public interface QuestionCustomRepository {
-    List<QuestionDto> findByQuestions(Long id);
+    List<QuestionDto> findByQuestionsUser(Long id);
     QuestionDto findByQuestion(Long userId,Long questionId);
+    List<QuestionDto> findByQuestionsAdmin();
+    QuestionDto findByQuestionAdmin(Long questionId);
 
 }

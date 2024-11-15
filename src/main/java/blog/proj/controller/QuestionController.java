@@ -25,7 +25,7 @@ public class QuestionController {
     public ResponseEntity<List<QuestionDto>> getQuestionList(@PathVariable("user") String user) {
         log.info("question list in");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<QuestionDto> list = questionService.getQuestionList(authentication);
+        List<QuestionDto> list = questionService.getQuestionListUser(authentication);
         return ResponseEntity.ok(list);
     }
     //문의사항 작성
@@ -57,6 +57,22 @@ public class QuestionController {
         log.info("getQuestion out");
         return ResponseEntity.ok(questionDto); // 200 OK와 함께 리스트 반환
     }
+    //관리자용 문의사항 단건조회
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<QuestionDto> getQuestionadmin(@PathVariable("id") Long id) {
+        log.info("getQuestion start");
+
+        log.info("getQuestion in");
+        QuestionDto questionDto = questionService.getQuestionAdmin(id);
+        log.info("getQuestion : "+questionDto.getContent(),questionDto.getTitle(),questionDto.getAnswer(),questionDto.getId(),questionDto.getQuestionStatus());
+        if (questionDto==null) {
+            log.info("getQuestion empty");
+            return ResponseEntity.notFound().build(); //404 코드 반환
+        }
+        log.info("getQuestion out");
+        return ResponseEntity.ok(questionDto); // 200 OK와 함께 리스트 반환
+    }
+
     //문의사항 삭제
     @DeleteMapping("/{user}/{id}/delete")
     public ResponseEntity<Void> deleteQuestion(@PathVariable("user") String user,@PathVariable("id") Long id) {
@@ -64,25 +80,29 @@ public class QuestionController {
         questionService.deleteQuestion(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-/*
+
+
     //문의사항 리스트(관리자용)
-    @GetMapping("/{user}/admin")
-    public ResponseEntity<List<QuestionDto>> getQuestionListofAdmin(@PathVariable String user) {
-        return ResponseEntity.ok();
+    @GetMapping("/admin")
+    public ResponseEntity<List<QuestionDto>> getQuestionListofAdmin(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    List<QuestionDto> list = questionService.getQuestionListAdmin(authentication);
+        return ResponseEntity.ok(list);
     }
 
-
-
-
-
-
-
-    //문의사항 답변(관리자 용)
-    @PostMapping("/{user}/{id}/answer")
-    public ResponseEntity<QuestionDto> answerQuestion(@PathVariable String user,@PathVariable Long id) {
-        return "index.html";
+//    //문의사항 답변(관리자 용)
+    @PostMapping("/admin/answer/{id}")
+    public ResponseEntity<QuestionDto> answerQuestion(@PathVariable("id") Long id,@RequestBody QuestionDto questionDto) {
+        log.info("answer post in ");
+        try{
+            log.info("answer post in try1 ");
+            questionService.answerQuestion(id,questionDto);
+            log.info("answer post in try2");
+            return new ResponseEntity<>(HttpStatus.OK); // 201 Created
+        } catch (Exception e) {
+            // 게시물 생성 실패시 메시지
+            log.info("answer post in catch");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-*/
-
-
 }
