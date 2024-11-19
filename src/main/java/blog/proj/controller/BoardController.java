@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,16 +39,41 @@ public class BoardController {
     //특정폴더의 게시글 리스트
     @GetMapping("/{user}/{folder}")
     public  ResponseEntity<List<BoardDto>> getBardList(@PathVariable("user") String user, @PathVariable("folder") String folder) {
+        log.info("boardlist user = "+user+"   folder = "+folder);
         UserDto userDto = userService.userinfoNickName(user);
-        log.info("===boardlist in =={}",userDto.getNickName());
-        log.info("===boardlist user in =={}",user);
-        log.info("===boardlist folder in =={}",folder);
-
-//
-//        List<FolderDto> folderList = boardService.folderList(user,userDto.getId());
-
-
-       List<BoardDto> boardlist =  boardService.getBoardList(userDto,folder);
+        log.info("boardlist dto user = "+userDto.getNickName()+"   email = "+userDto.getEmail()+"   id = "+userDto.getId());
+        List<BoardDto> boardlist =  boardService.getBoardList(userDto,folder);
+        log.info("boardlist tostring"+boardlist.size());
+        for (BoardDto board : boardlist) {
+            log.info("Board ID: {}, Title: {}", board.getId(), board.getTitle());
+        }
+        if (boardlist.isEmpty()) {
+            log.info("boardlist empty");
+            return ResponseEntity.ok(Collections.emptyList()); // 빈 리스트 반환
+        }
+        log.info("boardlist out");
+        return ResponseEntity.ok(boardlist); // 200 OK와 함께 리스트 반환
+    }
+    //특정블로거 게시글 리스트 top9
+    @GetMapping("/{user}")
+    public  ResponseEntity<List<BoardDto>> getBardListUser(@PathVariable("user") String user) {
+        UserDto userDto = userService.userinfoNickName(user);
+        List<BoardDto> boardlist =  boardService.getBoardListUser(userDto);
+        log.info("boardlist tostring"+boardlist.size());
+        for (BoardDto board : boardlist) {
+            log.info("Board ID: {}, Title: {}", board.getId(), board.getTitle());
+        }
+        if (boardlist.isEmpty()) {
+            log.info("boardlist empty");
+            return ResponseEntity.ok(Collections.emptyList()); // 빈 리스트 반환
+        }
+        log.info("boardlist out");
+        return ResponseEntity.ok(boardlist); // 200 OK와 함께 리스트 반환
+    }
+    //모든 블로거 게시글 리스트 top9
+    @GetMapping("/all")
+    public  ResponseEntity<List<BoardDto>> getBardListAll() {
+        List<BoardDto> boardlist =  boardService.getBoardListAll();
         log.info("boardlist tostring"+boardlist.size());
         for (BoardDto board : boardlist) {
             log.info("Board ID: {}, Title: {}", board.getId(), board.getTitle());
@@ -60,7 +86,7 @@ public class BoardController {
         return ResponseEntity.ok(boardlist); // 200 OK와 함께 리스트 반환
     }
 
-    //게시글
+    //게시글 상세
     @GetMapping("/{user}/{folder}/{id}")
     public  ResponseEntity<BoardDto> getBoard( @PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("id") Long id) {
         BoardDto board = boardService.getBoard(id);
@@ -77,9 +103,10 @@ public class BoardController {
 @PostMapping("/{users}/{folder}")
     public  ResponseEntity<BoardDto> createBoard( @PathVariable("users") String users, @PathVariable("folder") String folder, @RequestBody BoardDto boardDto) {
     try {
+        log.info("board create in");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = (User) authentication.getPrincipal();
 
+        log.info("board create service in");
         // 게시물 저장 로직
         boardService.createBoard(boardDto,authentication); // 사용자 정보 저장
 
@@ -92,8 +119,11 @@ public class BoardController {
     }
     //게시글 수정
     @PutMapping("/{user}/{folder}/{id}/update")
-    public ResponseEntity<BoardDto> updateBoard(@RequestBody BoardDto boardDto,@PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("id") Long id) {
-        boardService.modifyBoard(id,boardDto);
+    public ResponseEntity<BoardDto> updateBoard(@RequestBody BoardDto boardDto,@PathVariable("user") String user, @PathVariable("folder") String folder,
+                                                @PathVariable("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("modify =={}",authentication.getPrincipal());
+        boardService.modifyBoard(id,boardDto,authentication);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

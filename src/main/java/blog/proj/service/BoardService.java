@@ -37,10 +37,20 @@ public class BoardService {
 
         //리스트 조회
     public List<BoardDto> getBoardList(UserDto userDto,String folder){
-        Folder folder1 = folderRepository.findByFolderName(folder);
-        log.info("user nickname =={}",userDto.getNickName());
-        log.info("user folder =={}",folder1);
+        log.info("board getboardlist service in ");
+        log.info("id={}  nickname={}  email={}  folder={}",userDto.getId(),userDto.getNickName(),userDto.getEmail(),folder);
+        Folder folder1 = folderRepository.findbyFolder(folder,userDto.getId());
+        log.info("folder folderid =={}  foldername =={}  ",folder1.getId(),folder1.getFolderName());
+
         return boardRepository.findByBoardList(userDto.getNickName(),folder1.getId());
+    }
+    //특정블로거 게시물 top9
+    public List<BoardDto> getBoardListUser(UserDto userDto){
+        return boardRepository.findByBoardListTop9(userDto.getNickName());
+    }
+    //전체블로거 게시물 top9
+    public List<BoardDto> getBoardListAll(){
+        return boardRepository.findByBoardListTop9All();
     }
         //단 건 조회
     @Transactional
@@ -52,7 +62,7 @@ public class BoardService {
     @Transactional
     public Board createBoard(BoardDto boardDto,@AuthenticationPrincipal Authentication authentication){
         User user = (User) authentication.getPrincipal();
-        Folder folder = folderRepository.findByFolderName(boardDto.getFolderName());
+        Folder folder = folderRepository.findbyFolder(boardDto.getFolderName(),user.getId());
         Board board= Board.builder()
                 .title(boardDto.getTitle())
                 .name(user.getNickName())
@@ -70,9 +80,10 @@ public class BoardService {
     }
     //게시글 수정
     @Transactional
-    public void modifyBoard(Long id,BoardDto boardDto){
+    public void modifyBoard(Long id,BoardDto boardDto,@AuthenticationPrincipal Authentication authentication){
+        User user = (User) authentication.getPrincipal();
         Board board = boardRepository.findById(id).orElseThrow();
-        Folder folder = folderRepository.findByFolderName(boardDto.getFolderName());
+        Folder folder = folderRepository.findbyFolder(boardDto.getFolderName(),user.getId());
         board.update(boardDto.getTitle(),boardDto.getContent(),boardDto.getBoardUpdateCount(),folder);
     }
 
