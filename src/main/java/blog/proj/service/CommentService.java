@@ -1,6 +1,5 @@
 package blog.proj.service;
 
-import blog.proj.dto.BoardDto;
 import blog.proj.dto.CommentDto;
 import blog.proj.entity.*;
 import blog.proj.repository.BoardRepository;
@@ -21,6 +20,7 @@ import java.util.List;
 public class CommentService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+
     //부모 댓글달기
     @Transactional
     public Comment createComment(Long id,CommentDto commentDto, @AuthenticationPrincipal Authentication authentication){
@@ -34,6 +34,7 @@ public class CommentService {
                 .board(board)
                 .build();
         return commentRepository.save(comment); }
+
     //자식 댓글달기
     @Transactional
     public Comment createReplyComment(Long id,CommentDto commentDto, @AuthenticationPrincipal Authentication authentication){
@@ -48,6 +49,7 @@ public class CommentService {
                 .board(board)
                 .build();
         return commentRepository.save(comment); }
+
     //해당 게시물 댓글 리스트
     public List<CommentDto> getCommentList(Long id){
         List<CommentDto> getComment = commentRepository.findByCommentList(id);

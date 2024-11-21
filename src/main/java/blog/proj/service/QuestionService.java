@@ -20,6 +20,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class QuestionService {
     private final QuestionRepository questionRepository;
+
+    //유저 본인 문의 리스트
     public List<QuestionDto> getQuestionListUser(@AuthenticationPrincipal Authentication authentication){
         log.info("question list service in");
         User user = (User) authentication.getPrincipal();
@@ -27,7 +29,7 @@ public class QuestionService {
         log.info("user id =={}",user.getId());
         return questionRepository.findByQuestionsUser(user.getId());
     }
-
+    //관리자용 유저들 문의 리스트
     public List<QuestionDto> getQuestionListAdmin(@AuthenticationPrincipal Authentication authentication){
         log.info("question list service in");
         User user = (User) authentication.getPrincipal();
@@ -38,6 +40,7 @@ public class QuestionService {
         return questionRepository.findByQuestionsAdmin();
     }
 
+    //문의 작성
     @Transactional
     public Question createQuestion(QuestionDto questionDto, @AuthenticationPrincipal Authentication authentication) {
         log.info("createquestion service in");
@@ -52,6 +55,8 @@ public class QuestionService {
                 .build();
         return questionRepository.save(question);
     }
+
+    //답변 로직
     @Transactional
     public Question answerQuestion(Long id,QuestionDto questionDto) {
         log.info("answerquestion answer in");
@@ -60,6 +65,7 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
+    //문의 상세 보기
     public QuestionDto getQuestion(@AuthenticationPrincipal Authentication authentication,Long id){
         log.info("question list service in");
         User user = (User) authentication.getPrincipal();
@@ -68,11 +74,13 @@ public class QuestionService {
         return questionRepository.findByQuestion(user.getId(),id);
     }
 
+    //관리자용 문의 상세 보기
     public QuestionDto getQuestionAdmin(Long id){
         log.info("question ADMIN list service in");
         return questionRepository.findByQuestionAdmin(id);
     }
 
+    //문의 삭제
     @Transactional
     public void deleteQuestion(Long id){
         questionRepository.deleteById(id);

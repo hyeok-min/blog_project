@@ -6,17 +6,14 @@ import blog.proj.dto.UserDto;
 import blog.proj.entity.*;
 import blog.proj.repository.BoardRepository;
 import blog.proj.repository.FolderRepository;
-import blog.proj.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,8 +21,6 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
     private final FolderRepository folderRepository;
 
     //검색
