@@ -45,7 +45,7 @@ public class CommentController {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             commentService.createComment(id,commentDto,authentication);
-        return new ResponseEntity<>(HttpStatus.CREATED); // 201 Created
+        return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (Exception e) {
         // 게시물 생성 실패시 메시지
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,22 +57,10 @@ public class CommentController {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             commentService.createReplyComment(id,commentDto,authentication);
-            return new ResponseEntity<>(HttpStatus.CREATED); // 201 Created
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
             // 게시물 생성 실패시 메시지
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    //댓글 삭제
-    @GetMapping("/{boardId}/delete/{commentId}")
-    public String deleteComment(@PathVariable Long boardId, @PathVariable Long commentId) {
-        return "index.html";
-    }
-
-    //댓글 수정
-    @GetMapping("/{boardId}/update/{commentId}")
-    public String updateComment(@PathVariable Long boardId, @PathVariable Long commentId) {
-        return "index.html";
     }
 }

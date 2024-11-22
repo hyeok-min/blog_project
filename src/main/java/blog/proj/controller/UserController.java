@@ -2,7 +2,6 @@ package blog.proj.controller;
 
 import blog.proj.config.UserDetailService;
 import blog.proj.dto.UserDto;
-import blog.proj.entity.User;
 import blog.proj.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,9 +36,8 @@ public class UserController {
         try {
             // 사용자 저장 로직
             userService.createUser(userDto); // 사용자 정보 저장
-
             // 회원가입 성공 시 메시지
-            return new ResponseEntity<>(HttpStatus.CREATED); // 201 Created
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
             // 회원가입 실패시 메시지
             return new ResponseEntity<>("create failed: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -101,21 +99,9 @@ public class UserController {
         }
     }
 
-/*
-    //계정 정보
-    @GetMapping("/userInfo")
-    public ResponseEntity<UserDto> userInfo(){
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-
-
- */
-
-
     //계정 수정
     @PutMapping("{name}/update")
-    public ResponseEntity<UserDto> userUpdate(@RequestBody UserDto userDto,@PathVariable("name") String name){
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,@PathVariable("name") String name){
         log.info(String.valueOf(userDto));
         log.info(userDto.getEmail());
         log.info(userDto.getNickName());
@@ -124,11 +110,9 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-
     //계정 삭제
     @DeleteMapping("/{name}/delete")
-    public ResponseEntity<String> userDelete(@PathVariable("name") String name){
+    public ResponseEntity<String> deleteUser(@PathVariable("name") String name){
         log.info("delete user controller in");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDto user = userService.userinfo(authentication.getName());
@@ -149,9 +133,4 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
-
-
 }

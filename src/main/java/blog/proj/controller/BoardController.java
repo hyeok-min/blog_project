@@ -3,8 +3,6 @@ package blog.proj.controller;
 import blog.proj.dto.BoardDto;
 import blog.proj.dto.FolderDto;
 import blog.proj.dto.UserDto;
-import blog.proj.entity.Board;
-import blog.proj.entity.Folder;
 import blog.proj.entity.User;
 import blog.proj.service.BoardService;
 import blog.proj.service.UserService;
@@ -13,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +28,14 @@ public class BoardController {
 
     //검색
     @GetMapping("/search")
-    public List<BoardDto> search(@RequestParam("query") String query){
+    public List<BoardDto> getBoardSearch(@RequestParam("query") String query){
         log.info("===search in =={}",query);
         return boardService.search(query);
     }
 
     //특정폴더의 게시글 리스트
     @GetMapping("/{user}/{folder}")
-    public  ResponseEntity<List<BoardDto>> getBardList(@PathVariable("user") String user, @PathVariable("folder") String folder) {
+    public  ResponseEntity<List<BoardDto>> getBoardList(@PathVariable("user") String user, @PathVariable("folder") String folder) {
         log.info("boardlist user = "+user+"   folder = "+folder);
         UserDto userDto = userService.userinfoNickName(user);
         log.info("boardlist dto user = "+userDto.getNickName()+"   email = "+userDto.getEmail()+"   id = "+userDto.getId());
@@ -48,15 +45,13 @@ public class BoardController {
             log.info("Board ID: {}, Title: {}", board.getId(), board.getTitle());
         }
         if (boardlist.isEmpty()) {
-            log.info("boardlist empty");
-            return ResponseEntity.ok(Collections.emptyList()); // 빈 리스트 반환
+            return ResponseEntity.ok(Collections.emptyList());
         }
-        log.info("boardlist out");
-        return ResponseEntity.ok(boardlist); // 200 OK와 함께 리스트 반환
+        return ResponseEntity.ok(boardlist);
     }
     //특정블로거 게시글 리스트 top9
     @GetMapping("/{user}")
-    public  ResponseEntity<List<BoardDto>> getBardListUser(@PathVariable("user") String user) {
+    public  ResponseEntity<List<BoardDto>> getBoardListUser(@PathVariable("user") String user) {
         UserDto userDto = userService.userinfoNickName(user);
         List<BoardDto> boardlist =  boardService.getBoardListUser(userDto);
         log.info("boardlist tostring"+boardlist.size());
@@ -65,11 +60,12 @@ public class BoardController {
         }
         if (boardlist.isEmpty()) {
             log.info("boardlist empty");
-            return ResponseEntity.ok(Collections.emptyList()); // 빈 리스트 반환
+            return ResponseEntity.ok(Collections.emptyList());
         }
         log.info("boardlist out");
-        return ResponseEntity.ok(boardlist); // 200 OK와 함께 리스트 반환
+        return ResponseEntity.ok(boardlist);
     }
+
     //모든 블로거 게시글 리스트 top9
     @GetMapping("/all")
     public  ResponseEntity<List<BoardDto>> getBardListAll() {
@@ -93,10 +89,10 @@ public class BoardController {
         log.info("board : "+board.getContent(),board.getTitle(),board.getName(),board.getId());
         if (board==null) {
             log.info("board empty");
-            return ResponseEntity.notFound().build(); //404 코드 반환
+            return ResponseEntity.notFound().build();
         }
         log.info("board out");
-        return ResponseEntity.ok(board); // 200 OK와 함께 리스트 반환
+        return ResponseEntity.ok(board);
     }
 
 //게시글 작성
@@ -108,10 +104,9 @@ public class BoardController {
 
         log.info("board create service in");
         // 게시물 저장 로직
-        boardService.createBoard(boardDto,authentication); // 사용자 정보 저장
+        boardService.createBoard(boardDto,authentication);
 
-        // 게시물 생성 성공 시 메시지
-        return new ResponseEntity<>(HttpStatus.CREATED); // 201 Created
+        return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (Exception e) {
         // 게시물 생성 실패시 메시지
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -131,7 +126,7 @@ public class BoardController {
     @DeleteMapping("/{user}/{folder}/{id}/delete")
     public ResponseEntity<Void> deleteBoard( @PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("id") Long id) {
        boardService.deleteBoard(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 삭제 성공 시 204 상태 코드 반환
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
@@ -149,7 +144,7 @@ public class BoardController {
             boardService.addFolder(loggedInUser,folderDto.getFolderName());
             log.info("====try in2");
 
-            return new ResponseEntity<>(HttpStatus.CREATED); // 201 Created
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("create failed: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
@@ -164,17 +159,17 @@ public class BoardController {
 
         if (folderList.isEmpty()) {
             log.info("folderlist empty");
-            return ResponseEntity.ok(Collections.emptyList()); // 빈 리스트 반환
+            return ResponseEntity.ok(Collections.emptyList());
         }
         log.info("folderlist out");
-        return ResponseEntity.ok(folderList); // 200 OK와 함께 리스트 반환
+        return ResponseEntity.ok(folderList);
     }
 
     //폴더 삭제
     @DeleteMapping("/{user}/{folder}/delete")
     public ResponseEntity<Void> deleteFolder( @PathVariable("user") String user, @PathVariable("folder") String folder) {
         boardService.deleteFolder(folder);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 삭제 성공 시 204 상태 코드 반환
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

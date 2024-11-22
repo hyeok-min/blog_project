@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,9 +17,11 @@ import java.time.format.DateTimeFormatter;
 @EntityListeners(AuditingEntityListener.class)//엔티티의 생성 및 수정을 감지함 //@CreatedDate,@LastModifiedDate 어노테이션을 사용하면 날짜가 자동설정됨.
 public class BaseTimeEntity {
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @CreatedDate
     private LocalDateTime  createDate;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
