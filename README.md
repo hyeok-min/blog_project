@@ -1,7 +1,7 @@
 # 블로그 프로젝트
 - 개인블로그 컨셉의 웹 어플리케이션 프로젝트입니다.
 - 백엔드 - https://github.com/hyeok-min/blog_project
-- 프론트엔드 - 
+- 프론트엔드 - https://github.com/hyeok-min/blog-project-front
 - 세부구현기능
    - 마이페이지
    - 게시글 CRUD
